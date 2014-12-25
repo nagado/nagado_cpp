@@ -1,5 +1,5 @@
 #include <iostream>
-#include <array>
+
 using namespace std;
 
 
@@ -7,26 +7,26 @@ void sort_worker (int begin, int end, int data[])
 {
   int k = begin;
   int k2 = end;
-  int num = data[(k + k2) / 2];
-  int copy;
+  int medium = data[(k + k2) / 2];
 
   while (k <= k2)
   {
-    while (data[k] < num)
+    while (data[k] < medium)
       k++;
 
-    while (data[k2] > num)
+    while (data[k2] > medium)
       k2--;
   
     if (k <= k2)
     {
-      copy = data[k];
+      int copy = data[k];
       data[k] = data[k2];
       data[k2] = copy;
       k++;
       k2--;
     }
   } 
+
   if (begin < k2)
     sort_worker (begin, k2, data);
   if (end > k)
@@ -38,8 +38,13 @@ int main ()
 {
   const int l = 10;
   int data [] = { 10, 2, 5, 30, 27, 3, 16, 70, 6, 1 };
+
   sort_worker (0, l - 1, data);
-  cout << data;
+
+  for (int num : data)
+    cout << num << " ";
+ 
+  cout << endl;
 
   return 0;
 } 

@@ -21,13 +21,14 @@ int length(const char * numStr)
 int stringToInteger(const char * numStr)
 {
   int num = 0; 
-  int len = length(numStr);
+  const int len = length(numStr);
 
-  for (int i = 0; i < len; i++)
+  for (int i = 0; i < len; ++i)
   {
     if ((int(numStr[i]) >= '0') && (int(numStr[i]) <= '9'))
       num += pow(10, len - i - 1) * (int(numStr[i]) - '0');
-    else{
+    else
+    {
       cout << "ERROR: Only numbers are allowed in the string\n";
       exit(-1);
     }
@@ -39,7 +40,7 @@ int stringToInteger(const char * numStr)
 
 int main()
 {
-  cout << stringToInteger(numStr2) << '\n';
+  cout << stringToInteger(numStr1) << '\n';
   
   return 0;
 }

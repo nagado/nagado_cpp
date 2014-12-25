@@ -14,9 +14,8 @@ void putError(const char* text)
 
 int main()
 {
-  FILE * fp;
+  FILE * fp = fopen("text.txt", "r");
 
-  fp = fopen("text.txt", "r");
   if (fp == 0)
     putError("Cannot open file");
 
@@ -28,6 +27,7 @@ int main()
       putError("The string is too long");
     cout << line;
   } 
+
   delete line;
   fclose(fp);
   

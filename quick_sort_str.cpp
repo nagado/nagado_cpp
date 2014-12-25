@@ -1,8 +1,8 @@
 #include <iostream>
-#include <array>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 using namespace std;
 
 const int max_amount_lines = 1000;
@@ -17,10 +17,10 @@ void sort_worker (int begin, int end, char ** data)
 
   while (k <= k2)
   {
-      while (strcmp(data[k],num) < 0)
+      while (strcmp(data[k], num) < 0)
       k++;
 
-    while (strcmp(data[k2],num) > 0)
+    while (strcmp(data[k2], num) > 0)
       k2--;
   
     if (k <= k2)
@@ -33,6 +33,7 @@ void sort_worker (int begin, int end, char ** data)
       k2--;
     }
   } 
+
   if (begin < k2)
     sort_worker (begin, k2, data);
   if (end > k)
@@ -49,11 +50,11 @@ void putError(const char * text)
 int main ()
 {
   const int max_line = 254;
-  FILE * f;
   int lineNum = 0;
   char ** data = new char * [max_amount_lines];
   char * line = new char[max_line + 1];
-  f = fopen("text.txt", "r");
+  FILE * f = fopen("text.txt", "r");
+
   if (f == 0)
     putError("Cannot open file");
   
@@ -80,6 +81,7 @@ int main ()
   
   delete line;
   delete data;
+
   return 0;
 }
 
