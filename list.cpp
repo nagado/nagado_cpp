@@ -4,94 +4,92 @@ using namespace std;
 struct Element
 {
   int information;
-  Element * lastElement;
-  Element * nextElement;   
+  Element * previous;
+  Element * next;   
 };
-
-Element * List;
 
 Element * createElement()
 {
   Element * el = new Element;
-  el -> information = 0;
-  el -> lastElement = 0;
-  el -> nextElement = 0;  
+  el->information = 0;
+  el->previous = 0;
+  el->next = 0;  
 
   return el;
 } 
 
-Element * getLastElement(Element * el)
+Element * getPreviousElement(Element * el)
 {
-  return el -> lastElement;
+  return el -> previous;
 }
 
 Element * getNextElement(Element * el)
 {
-  return el -> nextElement;
+  return el -> next;
 }
 
-void insertAfter(struct Element * newEl, struct Element * oldEl)
+void insertAfter(Element * newEl, Element * oldEl)
 {
-  newEl -> lastElement = oldEl;
-  newEl -> nextElement = oldEl -> nextElement;
-  oldEl -> nextElement = newEl;
+  newEl->previous = oldEl;
+  newEl->next = oldEl->next;
+  oldEl->next = newEl;
 
-  if ((newEl -> nextElement) != 0) 
-    (newEl -> nextElement) -> lastElement = newEl;
+  if (newEl->next != 0) 
+    (newEl->next)->previous = newEl;
 }
 
-void insertBefore(struct Element * newEl, struct Element * oldEl)
+void insertBefore(Element * newEl, Element * oldEl, Element * head)
 {
-  newEl -> lastElement = oldEl -> lastElement;
-  oldEl -> lastElement = newEl;
-  newEl -> nextElement = oldEl;
+  newEl->previous = oldEl->previous;
+  oldEl->previous = newEl;
+  newEl->next = oldEl;
 
-  if ((newEl -> lastElement) != 0)
-    (newEl -> lastElement) -> nextElement = newEl;
+  if (newEl->previous != 0)
+    (newEl->previous)->next = newEl;
   else
-    List = newEl;
+    head = newEl;
 }
 
-void deleteElement(Element * el)
+void deleteElement(Element * el, Element * head)
 {
-  if ((el -> lastElement) != 0)
-    (el -> lastElement) -> nextElement = (el -> nextElement);
+  if (el->previous != 0)
+    (el->previous)->next = (el->next);
   else
-    List = el -> nextElement;
+    head = el->next;
 
-  if ((el -> nextElement) != 0)
-    (el -> nextElement) -> lastElement = (el -> lastElement);
+  if (el->next != 0)
+    (el->next)->previous = (el->previous);
 
   delete el;
 }
 
-void printElement(struct Element * el)
+void printElement(Element * el)
 {
-  cout << "Information: " << el -> information << "\nLast Element's address: " << el -> lastElement << "\nNext Element's address: " << el -> nextElement << endl;
+  cout << "Information: " << el->information << "\nLast Element's address: " << el->previous << "\nNext Element's address: " << el->next << endl;
  
 }
 
 int test1()
 {
   int check = 0;
-  Element * currentElement = 0;
-  List = createElement();
-  currentElement = List;
+  Element * current = 0;
+  Element * head = createElement();
+  current = head;
 
-  currentElement -> information = 12;
-  insertAfter(createElement(), currentElement);
-  currentElement = getNextElement(currentElement);
-  currentElement -> information = 15;
+  current->information = 12;
+  insertAfter(createElement(), current);
+  current = getNextElement(current);
+  current->information = 15;
 
-  if (currentElement -> information != 15)
+  if (current->information != 15)
     check = -1;
-  if (List -> information != 12)
+  if (head->information != 12)
     check = -1;
 
-  insertBefore(createElement(), List);
-  List -> information = 10;
+  insertBefore(createElement(), current, head);
+  head->information = 10;
 
-  if (List -> information != 10)
+  if (head->information != 10)
     check = -1;
 
   return check;
@@ -100,20 +98,20 @@ int test1()
 int test2()
 {
   int check = 0;
-  Element * currentElement = 0;
-  List = createElement();
-  currentElement = List;
+  Element * current = 0;
+  Element * head = createElement();
+  current = head;
 
-  currentElement -> information = 10;
-  insertAfter(createElement(), currentElement);
-  currentElement = getNextElement(currentElement);
-  currentElement -> information = 20;
-  insertAfter(createElement(), currentElement);
-  currentElement = getNextElement(currentElement);
-  currentElement -> information = 30;
+  current->information = 10;
+  insertAfter(createElement(), current);
+  current = getNextElement(current);
+  current->information = 20;
+  insertAfter(createElement(), current);
+  current = getNextElement(current);
+  current->information = 30;
 
-  deleteElement(getLastElement(currentElement));
-  if (((getLastElement(currentElement) -> information) != 10) || ((currentElement -> information) != 30))
+  deleteElement(getPreviousElement(current), head);
+  if (((getPreviousElement(current)->information) != 10) || ((current->information) != 30))
     check = -1;
 
   return check;  
@@ -124,9 +122,13 @@ int main()
 {
   if (test1())
      cerr << "Someting is  wrong. Test1 (Creation. Insertion before and after).\n";
+  else
+    cout << "Test 1 successfully comleted\n";
 
   if (test2())
     cerr << "Something is wrong. Test2 (Creation, insertion after, walking forward and backward, deleting).\n";
+  else
+    cout << "Test 2 successfully comleted\n";
 
   return 0;
 }
