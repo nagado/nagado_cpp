@@ -18,12 +18,12 @@ Element * createElement()
   return el;
 } 
 
-Element * getPreviousElement(Element * el)
+Element * getPrevious(Element * el)
 {
   return el -> previous;
 }
 
-Element * getNextElement(Element * el)
+Element * getNext(Element * el)
 {
   return el -> next;
 }
@@ -38,7 +38,7 @@ void insertAfter(Element * newEl, Element * oldEl)
     (newEl->next)->previous = newEl;
 }
 
-void insertBefore(Element * newEl, Element * oldEl, Element * head)
+Element * insertBefore(Element * newEl, Element * oldEl, Element * head)
 {
   newEl->previous = oldEl->previous;
   oldEl->previous = newEl;
@@ -48,9 +48,11 @@ void insertBefore(Element * newEl, Element * oldEl, Element * head)
     (newEl->previous)->next = newEl;
   else
     head = newEl;
+
+  return head;
 }
 
-void deleteElement(Element * el, Element * head)
+Element * deleteElement(Element * el, Element * head)
 {
   if (el->previous != 0)
     (el->previous)->next = (el->next);
@@ -61,6 +63,8 @@ void deleteElement(Element * el, Element * head)
     (el->next)->previous = (el->previous);
 
   delete el;
+
+  return head;
 }
 
 void printElement(Element * el)
@@ -69,16 +73,114 @@ void printElement(Element * el)
  
 }
 
-int test1()
+void testGetPrevious()
 {
   int check = 0;
-  Element * current = 0;
   Element * head = createElement();
-  current = head;
+  Element * current = head;
+
+  if (getPrevious(head) != 0)
+    check = -1;
+
+  insertAfter(createElement(), current); 
+  current = getNext(current);
+
+  if (getPrevious(current) != head)
+    check = -1;
+
+  if (check)
+    cout << "Function getPrevious() is not working as it supposed to.\n";
+  else
+    cout << "Testing function getPrevious().......well done!.\n";
+}
+
+void testGetNext()
+{
+  int check = 0;
+  Element * head = createElement();
+  Element * current = head;
+
+  if (getNext(current) != 0)
+    check = -1;
+
+  current = createElement();
+  head = insertBefore(current, head, head);
+  if (current != head)
+    check = -1;
+
+  if (check)
+    cout << "Function getNext() is not working as it supposed to.\n";
+  else
+    cout << "Testing function getNext()...........well done!.\n";
+}
+
+void testInsertBefore()
+{
+  int check = 0;
+  Element * head = createElement();
+  Element * current = head;
+
+  current = createElement();
+  head = insertBefore(current, head, head); 
+
+  if (head != current)
+    check = -1;
+
+  if (getPrevious(current) != 0)
+    check = -1;
+
+  if (check)
+    cout << "Function insertBefore() is not working as it supposed to.\n";
+  else
+    cout << "Testing function insertBefore()......well done!.\n";
+}
+
+void testInsertAfter()
+{
+  int check = 0;
+  Element * head = createElement();
+  Element * current = head;
+
+  current = createElement();
+  insertAfter(current, head); 
+
+  if (getNext(head) != current)
+    check = -1;
+
+  if (check)
+    cout << "Function insertAfter() is not working as it supposed to.\n";
+  else
+    cout << "Testing function insertAfter().......well done!.\n";
+}
+
+void testDeleteElement()
+{
+  int check = 0;
+  Element * head = createElement();
+  Element * current = head;
+
+  insertAfter(createElement(), head); 
+  current = getNext(head);
+  head = deleteElement(current, head);
+
+  if (getNext(head) != 0) 
+    check = -1;
+
+  if (check)
+    cout << "Function deleteElement() is not working as it supposed to.\n";
+  else
+    cout << "Testing function deleteElement().....well done!.\n";
+}
+
+void test1()
+{
+  int check = 0;
+  Element * head = createElement();
+  Element * current = head;
 
   current->information = 12;
   insertAfter(createElement(), current);
-  current = getNextElement(current);
+  current = getNext(current);
   current->information = 15;
 
   if (current->information != 15)
@@ -86,49 +188,59 @@ int test1()
   if (head->information != 12)
     check = -1;
 
-  insertBefore(createElement(), current, head);
+  head = insertBefore(createElement(), current, head);
   head->information = 10;
 
   if (head->information != 10)
     check = -1;
 
-  return check;
+  if (check)
+    cout << "Global test 1 is not completed properly\n";
+  else
+    cout << "Global test 1...Done.\n";
+
 }
 
-int test2()
+void test2()
 {
   int check = 0;
-  Element * current = 0;
   Element * head = createElement();
-  current = head;
+  Element * current = head;
 
   current->information = 10;
   insertAfter(createElement(), current);
-  current = getNextElement(current);
+  current = getNext(current);
   current->information = 20;
   insertAfter(createElement(), current);
-  current = getNextElement(current);
+  current = getNext(current);
   current->information = 30;
 
-  deleteElement(getPreviousElement(current), head);
-  if (((getPreviousElement(current)->information) != 10) || ((current->information) != 30))
+  head = deleteElement(getPrevious(current), head);
+  if (((getPrevious(current)->information) != 10) || ((current->information) != 30))
     check = -1;
 
-  return check;  
+  if (check)
+    cout << "Global test 2 is not completed properly\n";
+  else
+    cout << "Global test 2...Done.\n";
+}
+
+void testing()
+{
+  testGetPrevious();
+  testGetNext();
+  testInsertBefore();
+  testInsertAfter();
+  testDeleteElement();
+
+  test1();
+  test2();
 }
 
 
 int main()
 {
-  if (test1())
-     cerr << "Someting is  wrong. Test1 (Creation. Insertion before and after).\n";
-  else
-    cout << "Test 1 successfully comleted\n";
-
-  if (test2())
-    cerr << "Something is wrong. Test2 (Creation, insertion after, walking forward and backward, deleting).\n";
-  else
-    cout << "Test 2 successfully comleted\n";
+  testing();
 
   return 0;
 }
